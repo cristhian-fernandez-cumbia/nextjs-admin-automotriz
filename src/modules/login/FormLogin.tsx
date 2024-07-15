@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation"
-import { User, Lock, Hide, Show } from "@/assets/icons";
+import { Hide, Show } from "@/assets/icons";
 import { useForm } from 'react-hook-form'
 import { signIn } from 'next-auth/react'
 

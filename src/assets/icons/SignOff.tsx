@@ -1,4 +1,4 @@
-import { IconProps } from '@/interface'
+import { IconProps } from '@/interface/icons'
 
 const SignOff = (props: IconProps) => {
   return (

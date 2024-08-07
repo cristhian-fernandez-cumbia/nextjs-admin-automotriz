@@ -1,0 +1,30 @@
+{
+  "data": {
+    "meetings": [
+      {
+        "idMeeting": 1,
+        "brand": "Toyota",
+        "model": "RAV4",
+        "plate": "XYZ-123",
+        "dateMeeting":"2024-08-04",
+        "active": true
+      },
+      {
+        "idMeeting": 2,
+        "brand": "Suzuki",
+        "model": "JIMMY",
+        "plate": "ABC-123",
+        "dateMeeting":"2024-08-06",
+        "active": true
+      },
+      {
+        "idMeeting": 3,
+        "brand": "Subaru",
+        "model": "FORESTER",
+        "plate": "MNO-456",
+        "dateMeeting":"2024-08-06",
+        "active": true
+      }
+    ]
+  }
+}

@@ -34,7 +34,7 @@ const FormLogin = () => {
           type="text"
           {...register("username", { required: true })}
           placeholder='Usuario' 
-          className='text-xl bg-ui-bg-input pl-6 border border-ui-border-input w-full px-3 py-2 mt-4 rounded-md focus:outline-none;'
+          className='text-xl bg-ui-bg-input pl-6 border border-ui-border-input w-full px-3 py-2 mt-4 text-black rounded-md focus:outline-none;'
         />
         {errors.username && (
           <span className="text-red-500 text-xs">
@@ -60,7 +60,7 @@ const FormLogin = () => {
           type={showPassword ? "text" : "password"}
           {...register("password", { required: true })}
           placeholder='Clave'
-          className='text-xl bg-ui-bg-input pl-6 border border-ui-border-input w-full px-3 py-2 mt-5 rounded-md focus:outline-none;'
+          className='text-xl bg-ui-bg-input pl-6 border border-ui-border-input w-full px-3 py-2 mt-5 text-black rounded-md focus:outline-none;'
         />
         {errors.password && (
           <span className="text-red-500 text-xs">

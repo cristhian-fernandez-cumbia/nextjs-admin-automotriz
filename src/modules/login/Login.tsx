@@ -29,7 +29,7 @@ const Login = () => {
           className="w-full h-64 md:h-full object-cover"
         />
       </div>
-      <div className='md:w-1/2 flex flex-col justify-center items-center relative'>
+      <div className='md:w-1/2 flex flex-col justify-center items-center relative bg-white'>
         <div className='w-full px-16 z-10 bg-white mb-10'>
           <Image 
             alt="logo" 

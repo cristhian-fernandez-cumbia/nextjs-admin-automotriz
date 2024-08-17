@@ -18,11 +18,12 @@ const authOptions = {
         }
 
         try {
+          console.log('credentials:::', credentials);
           const results = await conn.query(
             'SELECT * FROM user WHERE email = ?',
             [credentials.username]
           );
-          
+          console.log('results:::', results);
           if (Array.isArray(results)) {
             const userFound = results[0] as User; 
             if (!userFound) {

@@ -41,19 +41,14 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
     }
   }, [webcamRef]);
 
-  const handleDownloadVideo = useCallback(() => {
+  const handleUploadVideoServer = useCallback(async () => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      a.href = url;
-      a.download = generateFileName(process);
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-      setRecordedChunks([]);
+      const formData = new FormData();
+      formData.append('file', blob, generateFileName(process));
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
     }
   }, [recordedChunks, idmeeting, plate, process]);
   
@@ -89,8 +84,8 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         }
         {
           recordedChunks.length> 0 && (
-            <Button className='bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md text-white font-bold' onClick={handleDownloadVideo}>
-              DESCARGAR VIDEO
+            <Button className='bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md text-white font-bold' onClick={handleUploadVideoServer}>
+              CARGAR VIDEO
             </Button>
           )
         }

@@ -20,7 +20,7 @@ const authOptions = {
 
         try {
           console.log('credentials:::', credentials);
-          console.log('conn:::', conn);
+          console.log('conn2:::', conn.config());
           console.log('process.env.MYSQL_HOST:::', process.env.MYSQL_HOST);
           const results = await conn.query(
             'SELECT * FROM user WHERE email = ?',

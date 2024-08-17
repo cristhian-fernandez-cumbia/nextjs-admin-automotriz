@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import conn from '@/libs/mysql';
@@ -19,7 +20,8 @@ const authOptions = {
 
         try {
           console.log('credentials:::', credentials);
-
+          console.log('conn:::', conn);
+          console.log('process.env.MYSQL_HOST:::', process.env.MYSQL_HOST);
           const results = await conn.query(
             'SELECT * FROM user WHERE email = ?',
             [credentials.username]

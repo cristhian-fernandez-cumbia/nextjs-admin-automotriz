@@ -1,6 +1,7 @@
+import dotenv from 'dotenv';
 import mysql from 'serverless-mysql'
 
-const db = mysql({
+const conn = mysql({
   config:{
     host: process.env.MYSQL_HOST,
     user:process.env.MYSQL_USER,
@@ -10,4 +11,4 @@ const db = mysql({
   }
 })
 
-export default db;
+export default conn;

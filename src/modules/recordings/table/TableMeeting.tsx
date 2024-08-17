@@ -1,7 +1,8 @@
 "use client";
 
 import { TableCustom } from "@/components/table/TableCustom";
-import { Meeting, columns } from "./Columns";
+import { columns } from "./Columns";
+import { Meeting } from "@/interface/modules/meetings";
 
 interface TableMeetingProps {
   data: Meeting[];

@@ -3,7 +3,14 @@ export { default } from 'next-auth/middleware'
 export const config = {
   matcher: [
     "/",
-    "/mesas",
-    "/atencion/:path*",
+    "/users/:path",
+    "/citas",
+    "/citas/:path",
+    "/clientes",
+    "/clientes/:path",
+    "/grabaciones",
+    "/grabaciones/:path",
+    "/usuarios",
+    "/usuarios/:path",
   ]
 }

@@ -56,10 +56,11 @@ const config = {
           red: {
             DEFAULT:"#EC201F",
             light:"#D9D9D9",
+            button: "#FF0000"
           },
           yellow: {
             DEFAULT:"#FDDA04",
-            light:"#D9D9D9",
+            light:"#FEEC81",
           },
           gray: {
             DEFAULT:"#BEBBBB",

@@ -1,23 +1,15 @@
 "use client";
+import { Meeting } from "@/interface/modules/meetings";
 import { ColumnDef } from "@tanstack/react-table";
 import { format, parseISO  } from 'date-fns';
 import { useRouter } from "next/navigation"
-
-export type Meeting = {
-  idMeeting: number;
-  brand: string;
-  model: string;
-  plate: string;
-  dateMeeting: string;
-  active: boolean;
-};
 
 export const columns: ColumnDef<Meeting>[] = [
   {
     accessorKey: "dateMeeting",
     header: "Fecha Cita",
     cell: ({ row }) => {
-      const dateMeeting = row.original.dateMeeting;
+      const dateMeeting = row.original.date_meeting;
       const dateObject = parseISO(dateMeeting);
       return format(dateObject!, 'yyyy-MM-dd')
     },
@@ -70,7 +62,7 @@ export const columns: ColumnDef<Meeting>[] = [
     id: "actions",
     header: "Acciones",
     cell: ({ row }) => {
-      const idMeeting = row.original.idMeeting;
+      const idMeeting = row.original.idmeeting;
       return (
         <div className="flex flex-row justify-center">
           <ViewDetailsButton idMeeting={idMeeting} />

@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import mysql from 'serverless-mysql'
 
 const conn = mysql({
@@ -10,5 +9,15 @@ const conn = mysql({
     database:process.env.MYSQL_DATABASE
   }
 })
+
+export async function query(query: string, values?: any[]) {
+  try {
+    const results = await conn.query(query, values);
+    await conn.end();
+    return results;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export default conn;

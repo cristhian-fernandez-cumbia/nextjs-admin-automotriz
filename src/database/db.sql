@@ -49,3 +49,8 @@ INSERT INTO `dbclinicaautomotriz`.`role` (`name_role`) VALUES ('tecnico');
 
 INSERT INTO `dbclinicaautomotriz`.`user` (`email`, `name`, `lastname`, `password`, `idrole`) VALUES ('anthonydlc@gmail.com', 'Anthony', 'De la Cruz Cuya', '$2a$10$CUd2cMsItGZl91OGB1Xe9u2MAiWDEj7oysjsSZzKmTZ.Ev6JIhT7G', '1');
 
+
+INSERT INTO `dbclinicaautomotriz`.`meetings` (`brand`, `model`, `plate`, `date_meeting`) VALUES ('Toyota', 'RAV4', 'XYZ-123', '2024-08-18');
+INSERT INTO `dbclinicaautomotriz`.`meetings` (`brand`, `model`, `plate`, `date_meeting`) VALUES ('Suzuki', 'JIMMY', 'ABC-123', '2024-08-18');
+INSERT INTO `dbclinicaautomotriz`.`meetings` (`brand`, `model`, `plate`, `date_meeting`) VALUES ('Subaru', 'FORESTER', 'MNO-456', '2024-08-18');
+INSERT INTO `dbclinicaautomotriz`.`meetings` (`brand`, `model`, `plate`, `date_meeting`) VALUES ('Subaru', 'CROSSTREK', 'BCD-78910', '2024-08-18');

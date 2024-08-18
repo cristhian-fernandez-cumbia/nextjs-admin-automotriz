@@ -13,6 +13,8 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password", placeholder: "*****" }
       },
       async authorize(credentials) {
+        console.log('credentials:::', credentials);
+
         if (!credentials?.username || !credentials?.password) {
           throw new Error('Credenciales inválidas');
         }
@@ -47,6 +49,7 @@ const authOptions: NextAuthOptions = {
             throw new Error('Usuario no encontrado');
           }
         } catch (error) {
+          console.error('Error al autenticar:::', error);
           if (error instanceof Error) {
             throw new Error(`Error al autenticar: ${error.message}`);
           } else {

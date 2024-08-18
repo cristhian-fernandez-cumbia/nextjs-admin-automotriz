@@ -1,15 +1,16 @@
 import Button from '@/components/button/Button';
 import { ModalRecordingProps } from '@/interface/modules/recordings';
-import { generateFileName } from '@/utils/functions';
+import { formatDate, generateFileName } from '@/utils/functions';
 import React, { useCallback, useRef, useState } from 'react'
 import Webcam from 'react-webcam';
 
-const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, plate }) => {
+const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, plate, onClose, fetchRecordings }) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [facingMode, setFacingMode] =  useState<"user" | "environment">("environment")
   const [capturing, setCapturing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([])
+  const [isLoading, setIsLoading] = useState(false);
 
   const changeCamera = () => {
     setFacingMode(facingMode==="user" ? "environment" : "user")
@@ -43,12 +44,38 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
 
   const handleUploadVideoServer = useCallback(async () => {
     if (recordedChunks.length) {
+      setIsLoading(true);
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const formData = new FormData();
       formData.append('file', blob, generateFileName(process));
       formData.forEach((value, key) => {
         console.log(`${key}:`, value);
       });
+      const today = new Date();
+      const data = {
+        idmeeting,
+        dateRecording:formatDate(today),
+        name: generateFileName(process),
+        process
+      }
+      try {
+        const response = await fetch('/api/recordings', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          console.log('Video subido exitosamente');
+          onClose();
+          fetchRecordings();
+        } else {
+          console.error('Error al subir el video');
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, [recordedChunks, idmeeting, plate, process]);
   
@@ -58,8 +85,13 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         <div className='w-2 h-2 bg-ui-red rounded-full'></div>
         <h2 className='font-bold uppercase'>Grabación  - {process}</h2>
       </div>
-      <div className='mb-[14px] flex flex-row'>
-        <h3 className='font-bold uppercase bg-ui-gray-light py-1 px-3 text-sm '>Placa: {plate}</h3>
+      <div className='flex flex-row justify-between items-center mb-2'>
+        <div className='mb-[14px] flex flex-row'>
+          <h3 className='font-bold uppercase bg-ui-gray-light py-1 px-3 text-sm '>Placa: {plate}</h3>
+        </div>
+        <Button className='bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white font-bold' onClick={changeCamera}>
+          CAMBIAR CAMARA
+        </Button>
       </div>
       <div className='sm:w-full sm:h-full bg-red-500 rounded-sm mb-5'>
         <Webcam 
@@ -84,14 +116,11 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         }
         {
           recordedChunks.length> 0 && (
-            <Button className='bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md text-white font-bold' onClick={handleUploadVideoServer}>
-              CARGAR VIDEO
+            <Button className='bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md text-white font-bold' onClick={handleUploadVideoServer} disabled={isLoading}>
+              {isLoading ? 'CARGANDO...' : 'CARGAR VIDEO'}
             </Button>
           )
         }
-        <Button className='bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md text-white font-bold' onClick={changeCamera}>
-          CAMBIAR CAMARA
-        </Button>
       </div>
     </div>
   )

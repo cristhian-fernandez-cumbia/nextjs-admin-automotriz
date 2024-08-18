@@ -1,11 +1,10 @@
-import dotenv from 'dotenv';
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import conn from '@/libs/mysql';
 import bcrypt from 'bcryptjs';
-import { User } from '@/interface/login';
+import { User as NextAuthUser } from 'next-auth';
 
-const authOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -19,9 +18,6 @@ const authOptions = {
         }
 
         try {
-          console.log('credentials:::', credentials);
-          console.log('conn2:::', conn.config());
-          console.log('process.env.MYSQL_HOST:::', process.env.MYSQL_HOST);
           const results = await conn.query(
             'SELECT * FROM user WHERE email = ?',
             [credentials.username]
@@ -30,7 +26,7 @@ const authOptions = {
           console.log('results:::', results);
 
           if (Array.isArray(results) && results.length > 0) {
-            const userFound = results[0] as User;
+            const userFound = results[0];
 
             if (!userFound) {
               throw new Error('Usuario no encontrado');
@@ -40,12 +36,13 @@ const authOptions = {
             if (!isValidPassword) {
               throw new Error('Contraseña incorrecta');
             }
-
+            console.log('userFound:::', userFound);
             return {
               id: userFound.iduser.toString(),
-              username: userFound.email,
-              email: userFound.email || null
-            };
+              email: userFound.email,
+              name: userFound.name || null, 
+              image: userFound.image || null
+            } as NextAuthUser;
           } else {
             throw new Error('Usuario no encontrado');
           }
@@ -63,7 +60,28 @@ const authOptions = {
     signIn: "/auth/login",
     error: "/auth/error"
   },
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt'
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+        };
+      }
+      return session;
+    }
+  }
 };
 
 const handler = NextAuth(authOptions);

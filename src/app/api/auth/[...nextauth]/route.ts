@@ -1,8 +1,16 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import conn from '@/libs/mysql';
+import { query } from '@/libs/mysql';
 import bcrypt from 'bcryptjs';
 import { User as NextAuthUser } from 'next-auth';
+
+export interface User {
+  iduser: number;
+  email: string;
+  password: string;
+  name?: string;
+  image?: string;
+}
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -20,14 +28,14 @@ const authOptions: NextAuthOptions = {
         }
 
         try {
-          const results = await conn.query(
+          const results = await query<User>(
             'SELECT * FROM user WHERE email = ?',
             [credentials.username]
           );
 
           console.log('results:::', results);
 
-          if (Array.isArray(results) && results.length > 0) {
+          if (results.length > 0) {
             const userFound = results[0];
 
             if (!userFound) {
@@ -38,6 +46,7 @@ const authOptions: NextAuthOptions = {
             if (!isValidPassword) {
               throw new Error('Contraseña incorrecta');
             }
+
             console.log('userFound:::', userFound);
             return {
               id: userFound.iduser.toString(),
@@ -83,6 +92,10 @@ const authOptions: NextAuthOptions = {
         };
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Puedes redirigir a la página base o a la URL proporcionada
+      return baseUrl;
     }
   }
 };

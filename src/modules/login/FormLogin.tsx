@@ -4,6 +4,7 @@ import { Hide, Show } from "@/assets/icons";
 import { useForm } from 'react-hook-form'
 import { signIn } from 'next-auth/react'
 import dotenv from 'dotenv';
+dotenv.config();
 
 const FormLogin = () => {
   const router = useRouter();

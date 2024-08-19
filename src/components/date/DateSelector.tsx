@@ -1,6 +1,5 @@
 'use client';
 import * as React from 'react';
-// import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { DateRange } from 'react-day-picker';
@@ -26,13 +25,14 @@ const DateSelector: React.FC<DateSelectorProps> = ({ onDatesChange, selectedDate
       setDateRange(range);
       onDatesChange(range.from, range.to);
     } else {
-      setDateRange({ from: range?.from || dateRange?.from, to: range?.to || dateRange?.to });
+      setDateRange({ from: range?.from || dateRange?.from, to: range?.from || dateRange?.from });
+      range?.from && onDatesChange(range?.from, range?.from);
     }
   };
 
   return (
     <div className="relative flex flex-row md:items-center mb-4">
-      <div className='bg-ui-gray text-black flex items-center h-12 px-3 text-[16px] border-[1px] border-ui-gray w-24 font-medium'>
+      <div className='bg-ui-gray text-black flex items-center h-12 text-[16px] border-[1px] border-ui-gray w-28 pl-3 font-medium'>
         Fechas:
       </div>
       <Popover>
@@ -45,6 +45,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({ onDatesChange, selectedDate
             {dateRange?.from ? (
               dateRange.to ? (
                 `${format(dateRange.from, 'dd/MM/yyyy', { locale: es })} - ${format(dateRange.to, 'dd/MM/yyyy', { locale: es })}`
+
               ) : (
                 format(dateRange.from, 'dd/MM/yyyy', { locale: es })
               )

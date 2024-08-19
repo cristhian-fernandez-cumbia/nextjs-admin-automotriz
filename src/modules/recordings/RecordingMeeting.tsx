@@ -61,9 +61,9 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
         <div className='mb-6'>
           <h1 className='font-bold mb-4 dark:text-white'>Detalles de la Reunión | {meeting.date_meeting}</h1>
           <div className='flex gap-4 flex-wrap justify-between'>
-            <p className='border-2 w-[48%] md:w-[30%] p-2 bg-slate-200'><strong>Marca:</strong> {meeting.brand}</p>
-            <p className='border-2 w-[48%] md:w-[30%] p-2 bg-slate-200'><strong>Modelo:</strong> {meeting.model}</p>
-            <p className='border-2 w-[48%] md:w-[30%] p-2 bg-slate-200'><strong>Placa:</strong> {meeting.plate}</p>
+            <p className='border-2 w-[47%] md:w-[30%] p-2 bg-slate-200'><strong>Marca:</strong> {meeting.brand}</p>
+            <p className='border-2 w-[47%] md:w-[30%] p-2 bg-slate-200'><strong>Modelo:</strong> {meeting.model}</p>
+            <p className='border-2 w-[47%] md:w-[30%] p-2 bg-slate-200'><strong>Placa:</strong> {meeting.plate}</p>
           </div>
         </div>
         <div>
@@ -72,7 +72,7 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
               const arrayRecording = getRecordingByProcess(process);
               return (
                 <div key={`item-${process}`}>
-                  <div className='bg-ui-yellow-light flex flex-row justify-between mb-1 px-8 py-3 items-center font-extrabold'>
+                  <div className='bg-ui-yellow-light flex flex-row justify-between mb-1 px-3 md:px-8 py-3 items-center font-extrabold'>
                     <h2>{`${index + 1}. ${process}`}</h2>
                     <button className='py-2 bg-green-600 hover:bg-green-800 rounded-md text-white flex flex-row items-center gap-2 text-[12px] w-28 justify-center' onClick={() => openModal(process)}>
                       GRABAR
@@ -83,10 +83,10 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
                     {
                       arrayRecording && arrayRecording.length > 0 ? arrayRecording.map((video) => {
                         return (
-                          <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3 items-center w-full mb-1' key={video.name_recording}>
+                          <div className='bg-ui-gray-light flex flex-row justify-between px-3 md:px-8 py-3 items-center w-full mb-1' key={video.name_recording}>
                             <div className='flex flex-row items-center gap-2 text-green-800'>
-                              <Cinema className='scale-125' fill='green'/>
-                              <p>{video.name_recording}</p>
+                              <Cinema className='scale-150 md:scale-125' fill='green'/>
+                              <p className='text-[13px] md:text-[15px] w-36 md:w-full'>{video.name_recording}</p>
                             </div>
                             <div className='flex flex-row w-[108px] justify-between'>
                               <div className='border-2 bg-ui-red border-ui-red w-[44px] rounded-sm flex justify-center items-center scale-125 hover:bg-red-800 hover:border-red-800 hover:cursor-pointer py-1' onClick={() => openDeleteModal(video.idrecording)} >
@@ -99,7 +99,7 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
                           </div> 
                         );
                       }) : (
-                        <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3 items-center w-full mb-1'>
+                        <div className='bg-ui-gray-light flex flex-row justify-between px-3 md:px-8 py-3 items-center w-full mb-1'>
                           <div className='flex flex-row items-center gap-2'>
                             <Cinema className='scale-125'/>
                             <p>No hay video grabado</p>

@@ -2,9 +2,9 @@
 import React, { useState,useEffect } from 'react';
 import DateSelector from '@/components/date/DateSelector';
 import SearchSelector from '@/components/search/SearchSelector';
-import { format } from 'date-fns';
 import { TableMeeting } from './table/TableMeeting';
 import { useFilteredTableData } from '@/hooks/useFilteredTableData';
+import { formatDate } from '@/utils/functions';
 
 const Recordings: React.FC = () => {
   const today = new Date();
@@ -20,6 +20,7 @@ const Recordings: React.FC = () => {
           throw new Error('Network response was not ok');
         }
         const result = await response.json();
+        console.log('result:::', result);
         setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -39,24 +40,23 @@ const Recordings: React.FC = () => {
   };
 
   const handleSearch = () => {
-    console.log('Fechas seleccionadas:', formatDate(dates[0]), '-', formatDate(dates[1]));
+    console.log('Fechas seleccionadas:', formatDate(dates[0]), '||', formatDate(dates[1]));
     updateCriteria({ searchValue: searchValue });
     updateCriteria({ dates: [dates[0], dates[1]] });
+    console.log('data:::', data);
   };
-
-  const formatDate = (date: Date | null) => date ? format(date, 'dd/MM/yyyy') : '';
 
   return (
     <div>
       <h1 className='text-black font-extrabold text-ui-panel-title dark:text-white mb-6'>GRABACIONES</h1>
-      <div className='flex flex-col md:flex-row md:justify-between md:gap-4 mb-2'>
-        <div className='flex flex-col md:flex-row md:gap-4'>
+      <div className='flex flex-col xl:flex-row xl:justify-between lg:gap-4 mb-0'>
+        <div className='flex flex-col md:flex-row md:gap-4 justify-between'>
           <DateSelector onDatesChange={handleDatesChange} selectedDates={dates} />
           <SearchSelector onSearchValueChange={handleSearchValueChange} />
         </div>
         <button
           onClick={handleSearch}
-          className="bg-ui-red text-white font-bold py-[11px] px-4 hover:bg-ui-red w-full md:w-auto mb-5"
+          className="bg-ui-red text-white font-bold py-[11px] px-4 hover:bg-ui-red  md:w-auto mb-5"
         >
           BUSCAR
         </button>

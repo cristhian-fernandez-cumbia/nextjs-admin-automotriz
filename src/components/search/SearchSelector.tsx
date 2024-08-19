@@ -16,18 +16,18 @@ const SearchSelector: React.FC<SearchSelectorProps> = ({ onSearchValueChange }) 
 
   return (
     <div className='flex flex-row mb-4'>
-      <div className='bg-ui-gray text-black flex items-center h-12 px-3 text-[16px] border-[1px] border-ui-gray w-24 font-medium'>
+      <div className='bg-ui-gray text-black flex items-center h-12 pl-3 text-[16px] border-[1px] border-ui-gray w-28 font-medium'>
         Placa:
       </div>
-      <div className='relative w-full'>
+      <div className='relative w-full lg:w-auto'>
         <input
           type="text"
           value={searchValue}
           onChange={handleInputChange}
-          className="px-4 border cursor-pointer border-ui-gray w-full md:w-auto md:pr-10 flex items-center h-12 focus:outline-none"
+          className="px-4 border cursor-pointer border-ui-gray w-full lg:w-auto lg:pr-10 flex items-center h-12 focus:outline-none"
           placeholder="Placa"
         />
-        <IconCustomers className='absolute right-2 md:right-6 top-3'/>
+        <IconCustomers className='absolute right-2 md:right-4 lg:right-3 top-3'/>
       </div>
     </div>
   );

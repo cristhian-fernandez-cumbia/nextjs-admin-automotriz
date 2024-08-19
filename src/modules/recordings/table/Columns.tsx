@@ -3,6 +3,7 @@ import { Meeting } from "@/interface/modules/meetings";
 import { ColumnDef } from "@tanstack/react-table";
 import { format, parseISO  } from 'date-fns';
 import { useRouter } from "next/navigation"
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export const columns: ColumnDef<Meeting>[] = [
   {
@@ -44,13 +45,13 @@ export const columns: ColumnDef<Meeting>[] = [
   },
   {
     id: "phase",
-    header: "Fases",
+    header: "Procesos",
     cell: () => (
-      <div className="flex flex-row gap-1 justify-center flex-wrap">
-        <div className="h-6 w-6 rounded-full bg-green-600 text-white flex justify-center items-center font-semibold hover:cursor-pointer">R</div>
-        <div className="h-6 w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-semibold hover:cursor-pointer">M</div>
-        <div className="h-6 w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-semibold hover:cursor-pointer">A</div>
-        <div className="h-6 w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-semibold hover:cursor-pointer">E</div>
+      <div className="flex flex-row gap-1 justify-center">
+        <div className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-green-600 text-white flex justify-center items-center font-bold hover:cursor-pointer p-2 text-[11px] md:text-[14px]">R</div>
+        <div className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-bold hover:cursor-pointer p-2 text-[11px] md:text-[14px]">M</div>
+        <div className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-bold hover:cursor-pointer p-2 text-[11px] md:text-[14px]">A</div>
+        <div className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-gray-400 text-gray-600 flex justify-center items-center font-bold hover:cursor-pointer p-2 text-[11px] md:text-[14px]">E</div>
       </div>
     ),
     meta: {
@@ -78,6 +79,7 @@ export const columns: ColumnDef<Meeting>[] = [
 
 const ViewDetailsButton: React.FC<{ idMeeting: number }> = ({ idMeeting }) => {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const handleViewDetails = () => {
     router.push(`/grabaciones/${idMeeting}`);
@@ -88,7 +90,9 @@ const ViewDetailsButton: React.FC<{ idMeeting: number }> = ({ idMeeting }) => {
       onClick={handleViewDetails}
       className="py-2 px-3 bg-ui-red text-white hover:bg-red-700 hover:cursor-pointer font-semibold text-xs"
     >
-      Ver Detalle
+      {
+        isMobile ? 'Detalle' : 'Ver Detalle'
+      }
     </div>
   );
 };

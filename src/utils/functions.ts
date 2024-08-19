@@ -17,5 +17,5 @@ const removeAccents = (str: string) => {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 
-export const formatDate = (date: Date | null) => date ? format(date, 'dd/MM/yyyy') : '';
+export const formatDate = (date: Date | null) => date ? format(date, 'yyyy-MM-dd') : '';
 export const formatDateTime = (date: Date | null) => date ? format(date, 'yyyy-MM-dd HH:mm:ss') : '';

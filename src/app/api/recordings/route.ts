@@ -12,16 +12,11 @@ export const GET = async (req: Request) => {
       return NextResponse.json({ message: 'Parámetros requeridos faltantes' }, { status: 400 });
     }
 
-    // Realizar la consulta
     const [results] = await pool.query<RowDataPacket[]>(
       'SELECT * FROM recordings WHERE idmeeting = ? AND active = "S"',
       [idmeeting]
     );
-
-    // Convertir los resultados a un tipo específico
     const formattedResults: Recording[] = results as Recording[];
-
-    console.log('results recordings:::', formattedResults);
     return NextResponse.json(formattedResults);
   } catch (error) {
     if (error instanceof Error) {
@@ -34,27 +29,51 @@ export const GET = async (req: Request) => {
 
 export const POST = async (request: Request) => {
   try {
-    const { idmeeting, dateRecording, name, process } = await request.json();
+    const body = await request.json();
+    const { idmeeting, dateRecording, nameRecording, process } = body;
 
-    // Realizar la inserción
+    if (!idmeeting || !dateRecording || !nameRecording || !process) {
+      return NextResponse.json({ message: 'Faltan parámetros requeridos' }, { status: 400 });
+    }
     const [result] = await pool.query<ResultSetHeader>(
-      "INSERT INTO recordings SET ?", {
-        idmeeting,
-        date_recording: dateRecording,
-        name,
-        process
-      }
+      "INSERT INTO recordings (idmeeting, date_recording, name_recording, process) VALUES (?, ?, ?, ?)",
+      [idmeeting, dateRecording, nameRecording, process]
     );
-
-    console.log('result POST:::', result);
-
     return NextResponse.json({
       idmeeting,
       dateRecording,
-      name,
+      nameRecording,
       process,
       idrecording: result.insertId
     });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 500 });
+    } else {
+      return NextResponse.json({ message: 'Error desconocido' }, { status: 500 });
+    }
+  }
+};
+
+export const DELETE = async (request: Request) => {
+  try {
+    const body = await request.json();
+    const { idrecording } = body;
+
+    if (!idrecording) {
+      return NextResponse.json({ message: 'Parámetro idrecording requerido' }, { status: 400 });
+    }
+
+    const [result] = await pool.query<ResultSetHeader>(
+      "UPDATE recordings SET active = 'N' WHERE idrecording = ?",
+      [idrecording]
+    );
+    
+    if (result.affectedRows === 0) {
+      return NextResponse.json({ message: 'Registro no encontrado o no actualizado' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Registro actualizado correctamente' });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ message: error.message }, { status: 500 });

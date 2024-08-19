@@ -9,7 +9,7 @@ export interface Recording {
   idrecording: number;       
   idmeeting: number;         
   date_recording: string;   
-  name: string;              
+  name_recording: string;              
   process: string;           
   active: 'S' | 'N';         
   url_recording?: string;

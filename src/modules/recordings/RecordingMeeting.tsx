@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Camera, Cinema, Play, Trash } from '@/assets/icons';
 import { Meeting } from '@/interface/modules/meetings';
 import Modal from '@/components/modal/Modal';
 import ModalRecording from './modal/ModalRecording';
 import { Recording } from '@/interface/modules/recordings';
-
+import ModalConfirmation from '@/components/modal/ModalConfirmation';
+import useDeleteRecording from '@/hooks/useDeleteRecording';
 interface RecordingMeetingProps {
   meeting: Meeting;
 }
@@ -17,7 +18,6 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [loading, setLoading] = useState(true);
-
   const fetchRecordings = async () => {
     setLoading(true);
     try {
@@ -32,7 +32,9 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
       setLoading(false); 
     }
   };
-  
+
+  const { isModalDeleteOpen, openDeleteModal, closeDeleteModal, deleteRecording, isDeleting } = useDeleteRecording(fetchRecordings);
+
   useEffect(() => {
     fetchRecordings();
   }, [meeting.idmeeting]);
@@ -48,7 +50,7 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
   };
 
   const getRecordingByProcess = (process: string) => {
-    const arrayRecording: Recording[] = recordings.filter(rec => rec.process === process) || [];
+    const arrayRecording: Recording[] = recordings && recordings.filter(rec => rec.process === process) || [];
     return arrayRecording;
   };
 
@@ -65,49 +67,51 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
           </div>
         </div>
         <div>
-        {
-          !loading && processes.map((process, index) =>{
-            const arrayRecording = getRecordingByProcess(process);
-            return (
-              <div key={`item-${process}`}>
-                <div className='bg-ui-yellow-light flex flex-row justify-between mb-1 px-8 py-3 items-center font-extrabold'>
-                  <h2>{`${index +1}. ${process}`}</h2>
-                  <button className='py-1 bg-ui-red-button rounded-md text-white flex flex-row items-center gap-2 text-[12px] w-28 justify-center' onClick={() => openModal(process)}>
-                    GRABAR
-                    <Camera className='scale-125'/>
-                  </button>
-                </div>
-                <div className=' flex flex-col  font-bold'>
-                   {
-                    arrayRecording && arrayRecording.length > 0 ? arrayRecording.map((video) =>{
-                      return (
-                       <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3  items-center w-full mb-1 ' key={video.name}>
-                        <div className='flex flex-row items-center gap-2 text-green-800'>
-                          <Cinema className='scale-125' fill='green'/>
-                          <p>{video.name}</p>
-                        </div>
-                        <div className='flex flex-row w-[108px] justify-between'>
-                          <div className='border-2 border-ui-red w-[44px] rounded-sm flex justify-center items-center scale-125'><Trash /></div>
-                          <div className='border-2 border-black w-[44px] rounded-sm flex justify-center items-center scale-125'><Play /></div>
-                        </div>
-                       </div> 
+          {
+            !loading && processes.map((process, index) => {
+              const arrayRecording = getRecordingByProcess(process);
+              return (
+                <div key={`item-${process}`}>
+                  <div className='bg-ui-yellow-light flex flex-row justify-between mb-1 px-8 py-3 items-center font-extrabold'>
+                    <h2>{`${index + 1}. ${process}`}</h2>
+                    <button className='py-2 bg-green-600 hover:bg-green-800 rounded-md text-white flex flex-row items-center gap-2 text-[12px] w-28 justify-center' onClick={() => openModal(process)}>
+                      GRABAR
+                      <Camera className='scale-125'/>
+                    </button>
+                  </div>
+                  <div className='flex flex-col font-bold'>
+                    {
+                      arrayRecording && arrayRecording.length > 0 ? arrayRecording.map((video) => {
+                        return (
+                          <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3 items-center w-full mb-1' key={video.name_recording}>
+                            <div className='flex flex-row items-center gap-2 text-green-800'>
+                              <Cinema className='scale-125' fill='green'/>
+                              <p>{video.name_recording}</p>
+                            </div>
+                            <div className='flex flex-row w-[108px] justify-between'>
+                              <div className='border-2 bg-ui-red border-ui-red w-[44px] rounded-sm flex justify-center items-center scale-125 hover:bg-red-800 hover:border-red-800 hover:cursor-pointer py-1' onClick={() => openDeleteModal(video.idrecording)} >
+                                <Trash fill='#FFFFFF'/>
+                              </div>
+                              <div className='border-2 border-black text-black hover:text-white w-[44px] rounded-sm flex justify-center items-center scale-125 py-1 hover:bg-black hover:cursor-pointer'>
+                                <Play className='fill-current' />
+                              </div>
+                            </div>
+                          </div> 
+                        );
+                      }) : (
+                        <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3 items-center w-full mb-1'>
+                          <div className='flex flex-row items-center gap-2'>
+                            <Cinema className='scale-125'/>
+                            <p>No hay video grabado</p>
+                          </div>
+                        </div> 
                       )
-                    }): (
-                      <div className='bg-ui-gray-light flex flex-row justify-between px-8 py-3  items-center w-full mb-1'>
-                        <div className='flex flex-row items-center gap-2'>
-                          <Cinema className='scale-125'/>
-                          <p>No hay video grabado</p>
-                        </div>
-                      </div> 
-                    )
-                   }
-                  
-
+                    }
+                  </div>
                 </div>
-              </div>
-            )
-          })
-        }
+              );
+            })
+          }
         </div>
         <button
           onClick={() => router.back()}
@@ -127,8 +131,16 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
           />
         )}
       </Modal>
+
+      <ModalConfirmation
+        isOpen={isModalDeleteOpen}
+        onClose={closeDeleteModal}
+        onConfirm={deleteRecording}
+        message="¿Seguro que desea eliminar esta grabación?"
+        isDeleting={isDeleting}
+      />
     </>
-  )
+  );
 }
 
-export default RecordingMeeting
+export default RecordingMeeting;

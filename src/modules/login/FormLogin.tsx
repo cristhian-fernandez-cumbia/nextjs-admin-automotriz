@@ -3,8 +3,6 @@ import { useRouter } from "next/navigation"
 import { Hide, Show } from "@/assets/icons";
 import { useForm } from 'react-hook-form'
 import { signIn } from 'next-auth/react'
-import dotenv from 'dotenv';
-dotenv.config();
 
 const FormLogin = () => {
   const router = useRouter();
@@ -16,10 +14,6 @@ const FormLogin = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log('data:::', data);
-    console.log('process.env.MYSQL_HOST:::', process.env.MYSQL_HOST);
-    console.log('process.env.MYSQL_USER:::', process.env.MYSQL_USER);
-
     const res = await signIn('credentials',{
       username: data.username,
       password: data.password,

@@ -21,8 +21,6 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password", placeholder: "*****" }
       },
       async authorize(credentials) {
-        console.log('credentials:::', credentials);
-
         if (!credentials?.username || !credentials?.password) {
           throw new Error('Credenciales inválidas');
         }
@@ -32,9 +30,6 @@ const authOptions: NextAuthOptions = {
             'SELECT * FROM user WHERE email = ?',
             [credentials.username]
           );
-
-          console.log('results:::', results);
-
           if (results.length > 0) {
             const userFound = results[0];
 
@@ -46,8 +41,6 @@ const authOptions: NextAuthOptions = {
             if (!isValidPassword) {
               throw new Error('Contraseña incorrecta');
             }
-
-            console.log('userFound:::', userFound);
             return {
               id: userFound.iduser.toString(),
               email: userFound.email,

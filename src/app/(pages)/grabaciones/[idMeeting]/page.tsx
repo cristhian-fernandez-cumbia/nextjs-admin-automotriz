@@ -27,10 +27,12 @@ const RecordingMeetingPage = () => {
     }
   }, [idMeeting]);
 
-  if (!meeting) return <p>Loading...</p>;
-
+  if (!meeting) return (
+    <div className='flex justify-center items-center'>
+      <span className="loader"></span>
+    </div>
+  );
   
-
   return (
     <RecordingMeeting meeting={meeting}/>
   );

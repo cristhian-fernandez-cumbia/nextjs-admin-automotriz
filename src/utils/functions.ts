@@ -18,3 +18,4 @@ const removeAccents = (str: string) => {
 };
 
 export const formatDate = (date: Date | null) => date ? format(date, 'dd/MM/yyyy') : '';
+export const formatDateTime = (date: Date | null) => date ? format(date, 'yyyy-MM-dd HH:mm:ss') : '';

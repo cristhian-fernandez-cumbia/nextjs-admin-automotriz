@@ -28,7 +28,7 @@ CREATE TABLE meetings (
     brand VARCHAR(100) NOT NULL,
     model VARCHAR(50) NOT NULL,
     plate VARCHAR(20) NOT NULL,
-    date_meeting DATETIME  NOT NULL,
+    date_meeting DATE NOT NULL,
     active VARCHAR(1) NOT NULL DEFAULT 'S'
 );
 

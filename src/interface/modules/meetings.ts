@@ -1,3 +1,5 @@
+import { Recording } from "./recordings";
+
 export interface Meeting {
     idmeeting: number;
     brand: string;
@@ -5,4 +7,5 @@ export interface Meeting {
     plate: string;
     date_meeting: string;
     active: boolean;
+    recordings?: Recording[]
 }

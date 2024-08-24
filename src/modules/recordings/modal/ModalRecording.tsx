@@ -124,7 +124,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
           <ChangeIcon className='mr-2'/> <Camera className='scale-150'/>
         </Button>
       </div>
-      <div className='sm:w-full h-[calc(100vh-4rem)] sm:h-full bg-red-500 rounded-sm mb-5'>
+      <div className='sm:w-full h-full bg-red-500 rounded-sm mb-5'>
         <Webcam 
           audio={true}
           ref={webcamRef}

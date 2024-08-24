@@ -120,7 +120,7 @@ const RecordingMeeting: React.FC<RecordingMeetingProps> = ({ meeting }) => {
           Regresar
         </button>
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal} style={{top:"0"}}>
+      <Modal isOpen={isModalOpen} onClose={closeModal} style={{top:"-20px"}}>
         {selectedProcess && (
           <ModalRecording 
             process={selectedProcess}

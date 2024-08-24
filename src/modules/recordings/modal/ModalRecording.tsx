@@ -130,8 +130,10 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
           videoConstraints={{
             // height: 1080,
             // width: 1920,
-            height: 720,
-            width: 1280,
+            height: 430,
+            width: 430,
+            // height: 720,
+            // width: 1280,
             facingMode: facingMode
           }}
           muted={true}

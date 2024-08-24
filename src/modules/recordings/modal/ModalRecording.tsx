@@ -3,90 +3,82 @@ import { ModalRecordingProps } from '@/interface/modules/recordings';
 import { formatDateTime, generateFileName } from '@/utils/functions';
 import React, { useCallback, useRef, useState } from 'react';
 import { useToast } from "@/components/ui/use-toast"; 
-import Webcam from 'react-webcam';
 import { Camera, ChangeIcon, PauseCircle, PlayCircle, Spin } from '@/assets/icons';
+import RecordRTC, { RecordRTCPromisesHandler } from 'recordrtc';
 
 const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, plate, onClose, fetchRecordings }) => {
-  const webcamRef = useRef<Webcam | null>(null);
-  const [facingMode, setFacingMode] =  useState<"user" | "environment">("environment")
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [facingMode, setFacingMode] =  useState<"user" | "environment">("environment");
   const [capturing, setCapturing] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([])
+  const recorderRef = useRef<RecordRTCPromisesHandler | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const changeCamera = () => {
-    setFacingMode(facingMode==="user" ? "environment" : "user")
-  }
-  const handleDataAvailable = useCallback(
-    (event: BlobEvent) => {
-      console.log('event.data:::', event.data);
-      if (event.data.size > 0) {
-        setRecordedChunks((prev) => prev.concat(event.data));
-      }
-      console.log('recordedChunks 0:::', recordedChunks);
-    },
-    [setRecordedChunks]
-  );
+    setFacingMode(facingMode === "user" ? "environment" : "user");
+  };
 
-  const handleStartCaptureClick = useCallback(() => {
-    console.log('handleStartCaptureClick:::', handleStartCaptureClick);
-    if (webcamRef.current && webcamRef.current.stream) {
-      setRecordedChunks([])
-      setCapturing(true);
-      mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-       mimeType: "video/mp4"
-      //  mimeType: "video/webm"
+  const handleStartCaptureClick = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode },
+        audio: true,
       });
-      mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
-      mediaRecorderRef.current.start();
 
-      console.log('recordedChunks 1:::', recordedChunks);
+      videoRef.current!.srcObject = stream;
+      recorderRef.current = new RecordRTCPromisesHandler(stream, {
+        type: 'video',
+        mimeType: 'video/webm',
+      });
+
+      await recorderRef.current.startRecording();
+      setCapturing(true);
+    } catch (error) {
+      console.error('Error al iniciar la captura:', error);
     }
-  }, [webcamRef, handleDataAvailable]);
-  
-  const handleStopCaptureClick = useCallback(() => {
-    console.log('mediaRecorderRef:::', mediaRecorderRef);
-    if (mediaRecorderRef.current) {
-      console.log('entro a mediaRecorderRef.current:::');
-      mediaRecorderRef.current.stop();
-      console.log('recordedChunks 2:::', recordedChunks);
+  }, [facingMode]);
+
+  const handleStopCaptureClick = useCallback(async () => {
+    if (recorderRef.current) {
+      await recorderRef.current.stopRecording();
       setCapturing(false);
     }
-  }, [webcamRef]);
+  }, []);
 
   const handleUploadVideoServer = useCallback(async () => {
-    if (recordedChunks.length) {
+    if (recorderRef.current) {
       setIsLoading(true);
-      const blob = new Blob(recordedChunks, { type: "video/mp4" });
+      const blob = await recorderRef.current.getBlob();
+
       const formData = new FormData();
       formData.append('file', blob, generateFileName(process));
-      formData.forEach((value, key) => {
-        console.log(`${key}:::>>`, value);
-      });
+      
       const today = new Date();
       const data = {
         idmeeting,
-        dateRecording:formatDateTime(today),
+        dateRecording: formatDateTime(today),
         nameRecording: generateFileName(process),
-        process
-      }
+        process,
+      };
+
       try {
         const response = await fetch('/api/recordings', {
           method: 'POST',
           body: JSON.stringify(data),
         });
+
         if (response.ok) {
           console.log('Video subido exitosamente');
+          
           // Descargar el video
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', generateFileName(process) + ".mp4");
+          link.setAttribute('download', generateFileName(process) + ".webm");
           document.body.appendChild(link);
           link.click();
           link.remove();
-          // ++++++
+
           onClose();
           fetchRecordings();
         } else {
@@ -108,8 +100,8 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         setIsLoading(false);
       }
     }
-  }, [recordedChunks, idmeeting, plate, process, toast]);
-  
+  }, [recorderRef, idmeeting, process, toast]);
+
   return (
     <div className='text-black max-w-96'>
       <div className='flex flex-row items-center gap-1 mb-2'>
@@ -125,20 +117,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         </Button>
       </div>
       <div className='sm:w-full h-full bg-red-500 rounded-sm mb-5'>
-        <Webcam 
-          audio={true}
-          ref={webcamRef}
-          videoConstraints={{
-            // height: 1080,
-            // width: 1920,
-            height: 720,
-            width: 480,
-            // height: 720,
-            // width: 1280,
-            facingMode: facingMode
-          }}
-          muted={true}
-        />
+        <video ref={videoRef} autoPlay muted className='w-full h-full'></video>
       </div>
       <div className='flex flex-row justify-between mb-5'>
         {
@@ -153,7 +132,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
             </Button> )
         }
         {
-          recordedChunks.length> 0 && (
+          !capturing && recorderRef.current && (
             <Button className='bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md text-white font-bold text-sm' onClick={handleUploadVideoServer} disabled={isLoading}>
               {isLoading ? (
                 <div className='flex items-center justify-center'>
@@ -169,4 +148,4 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
   )
 }
 
-export default ModalRecording
+export default ModalRecording;

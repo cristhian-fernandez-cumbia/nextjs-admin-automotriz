@@ -69,6 +69,15 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
         });
         if (response.ok) {
           console.log('Video subido exitosamente');
+          // Descargar el video
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', generateFileName(process) + ".webm");
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          // ++++++
           onClose();
           fetchRecordings();
         } else {
@@ -106,15 +115,18 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
           <ChangeIcon className='mr-2'/> <Camera className='scale-150'/>
         </Button>
       </div>
-      <div className='sm:w-full sm:h-full bg-red-500 rounded-sm mb-5'>
+      <div className='sm:w-full h-[calc(100vh-4rem)] sm:h-full bg-red-500 rounded-sm mb-5'>
         <Webcam 
           audio={true}
           ref={webcamRef}
           videoConstraints={{
-            height: 1080,
-            width: 1920,
+            // height: 1080,
+            // width: 1920,
+            height: 720,
+            width: 1280,
             facingMode: facingMode
           }}
+          muted={true}
         />
       </div>
       <div className='flex flex-row justify-between mb-5'>

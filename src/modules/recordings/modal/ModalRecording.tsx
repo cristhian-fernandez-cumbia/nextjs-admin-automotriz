@@ -20,9 +20,11 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
   }
   const handleDataAvailable = useCallback(
     (event: BlobEvent) => {
+      console.log('event.data:::', event.data);
       if (event.data.size > 0) {
         setRecordedChunks((prev) => prev.concat(event.data));
       }
+      console.log('recordedChunks 0:::', recordedChunks);
     },
     [setRecordedChunks]
   );

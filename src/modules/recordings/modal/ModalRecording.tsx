@@ -35,7 +35,8 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
       setRecordedChunks([])
       setCapturing(true);
       mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-       mimeType: "video/webm"
+       mimeType: "video/mp4"
+      //  mimeType: "video/webm"
       });
       mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
       mediaRecorderRef.current.start();
@@ -57,7 +58,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
   const handleUploadVideoServer = useCallback(async () => {
     if (recordedChunks.length) {
       setIsLoading(true);
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
+      const blob = new Blob(recordedChunks, { type: "video/mp4" });
       const formData = new FormData();
       formData.append('file', blob, generateFileName(process));
       formData.forEach((value, key) => {
@@ -81,7 +82,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', generateFileName(process) + ".webm");
+          link.setAttribute('download', generateFileName(process) + ".mp4");
           document.body.appendChild(link);
           link.click();
           link.remove();
@@ -130,8 +131,8 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
           videoConstraints={{
             // height: 1080,
             // width: 1920,
-            height: 430,
-            width: 430,
+            height: 720,
+            width: 480,
             // height: 720,
             // width: 1280,
             facingMode: facingMode

@@ -28,6 +28,7 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
   );
 
   const handleStartCaptureClick = useCallback(() => {
+    console.log('handleStartCaptureClick:::', handleStartCaptureClick);
     if (webcamRef.current && webcamRef.current.stream) {
       setRecordedChunks([])
       setCapturing(true);
@@ -36,12 +37,17 @@ const ModalRecording: React.FC<ModalRecordingProps> = ({ process, idmeeting, pla
       });
       mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
       mediaRecorderRef.current.start();
+
+      console.log('recordedChunks 1:::', recordedChunks);
     }
   }, [webcamRef, handleDataAvailable]);
   
   const handleStopCaptureClick = useCallback(() => {
+    console.log('mediaRecorderRef:::', mediaRecorderRef);
     if (mediaRecorderRef.current) {
+      console.log('entro a mediaRecorderRef.current:::');
       mediaRecorderRef.current.stop();
+      console.log('recordedChunks 2:::', recordedChunks);
       setCapturing(false);
     }
   }, [webcamRef]);

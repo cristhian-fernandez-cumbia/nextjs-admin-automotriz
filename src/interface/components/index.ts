@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 export interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   children?: React.ReactNode;
   className?: string;
   style?: CSSProperties;

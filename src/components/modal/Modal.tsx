@@ -2,7 +2,7 @@ import { CloseIcon } from '@/assets/icons';
 import { ModalProps } from '@/interface/components';
 
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className, style }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className='', style }) => {
   if (!isOpen) {
     return null;
   }
@@ -10,9 +10,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className, sty
   return (
     <div className='modalOverlay' >
       <div className={`${className} modalContent`} style={style}>
-        <button className='closeButton' onClick={onClose}>
-          <CloseIcon />
-        </button>
+        {onClose && (
+          <button className='closeButton' onClick={onClose}>
+            <CloseIcon />
+          </button>
+        )}
         {children}
       </div>
     </div>

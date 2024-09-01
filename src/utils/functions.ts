@@ -1,4 +1,4 @@
-type ProcessType = 'RECEPCIÓN' | 'MANT. MAYOR' | 'AFIN. ELECTRÓNICO' | 'ENTREGA';
+export type ProcessType = 'RECEPCIÓN' | 'MANT. MAYOR' | 'AFIN. ELECTRÓNICO' | 'ENTREGA';
 import { format } from 'date-fns';
 
 export const generateFileName = (process: ProcessType) => {

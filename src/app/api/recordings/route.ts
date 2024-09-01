@@ -30,20 +30,21 @@ export const GET = async (req: Request) => {
 export const POST = async (request: Request) => {
   try {
     const body = await request.json();
-    const { idmeeting, dateRecording, nameRecording, process } = body;
+    const { idmeeting, dateRecording, nameRecording, process,urlRecording } = body;
 
-    if (!idmeeting || !dateRecording || !nameRecording || !process) {
+    if (!idmeeting || !dateRecording || !nameRecording || !process  || !urlRecording) {
       return NextResponse.json({ message: 'Faltan parámetros requeridos' }, { status: 400 });
     }
     const [result] = await pool.query<ResultSetHeader>(
-      "INSERT INTO recordings (idmeeting, date_recording, name_recording, process) VALUES (?, ?, ?, ?)",
-      [idmeeting, dateRecording, nameRecording, process]
+      "INSERT INTO recordings (idmeeting, date_recording, name_recording, process, url_recording) VALUES (?, ?, ?, ?, ?)",
+      [idmeeting, dateRecording, nameRecording, process, urlRecording]
     );
     return NextResponse.json({
       idmeeting,
       dateRecording,
       nameRecording,
       process,
+      urlRecording,
       idrecording: result.insertId
     });
   } catch (error) {

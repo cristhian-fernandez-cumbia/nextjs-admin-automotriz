@@ -36,6 +36,8 @@ export const useVideoRecorder = (facingMode: 'user' | 'environment', onClose: { 
         mimeType: 'video/webm',
       });
 
+      console.log('recorderRef.current después de inicializar:', recorderRef.current);
+
       await recorderRef.current.startRecording();
       setCapturing(true);
       setVideoBlob(null);
@@ -46,9 +48,13 @@ export const useVideoRecorder = (facingMode: 'user' | 'environment', onClose: { 
   }, [facingMode]);
 
   const stopCapture = useCallback(async () => {
+    console.log('se detuvo');
+    
     if (recorderRef.current) {
+      console.log('recorderRef:::', recorderRef);
       await recorderRef.current.stopRecording();
       const blob = await recorderRef.current.getBlob();
+      console.log('blob:::', blob);
       setVideoBlob(blob);
       setVideoUrl(URL.createObjectURL(blob));
       setIsPlaying(false);

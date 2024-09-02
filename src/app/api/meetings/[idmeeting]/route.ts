@@ -18,7 +18,7 @@ export const GET = async (request: Request, { params }: { params: Params }) => {
   try {
     // Realizar la consulta
     const [rows] = await pool.query<RowDataPacket[]>(
-      'SELECT * FROM meetings WHERE idmeeting = ?', [params.idmeeting]
+      'SELECT * FROM meetings WHERE idmeeting = ?', [Number(params.idmeeting)]
     );
 
     // Si no se encuentra ninguna cita

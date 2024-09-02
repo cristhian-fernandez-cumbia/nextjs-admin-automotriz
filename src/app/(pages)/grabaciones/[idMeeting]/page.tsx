@@ -14,6 +14,7 @@ const RecordingMeetingPage = () => {
     if (idMeeting) {
       const fetchMeeting = async () => {
         const response = await fetch(`/api/meetings/${idMeeting}`);
+        if (!response.ok) throw new Error('Error fetching meeting data');
         const data: Meeting[] = await response.json();
         const dataFilter = data.find(row => row.idmeeting === Number(idMeeting));
         if (dataFilter) {

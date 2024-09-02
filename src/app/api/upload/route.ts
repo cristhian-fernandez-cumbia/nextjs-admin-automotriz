@@ -25,8 +25,11 @@ export async function POST(request: NextRequest) {
       ContentType: video.type,
     });
 
-    await s3Client.send(command);
-
+    const response = await s3Client.send(command);
+    console.log('response:::', response);
+    if (response.$metadata.httpStatusCode !== 200) {
+      throw new Error('Error en la carga del video a AWS S3');
+    }
     const fileUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/videos/${video.name}`;
     return NextResponse.json({ fileUrl });
   } catch (error) {
